@@ -1,0 +1,29 @@
+Source: maemo-translate
+Section: x11
+Priority: extra
+Maintainer: Sander <code@kroket.io>
+Build-Depends: debhelper (>= 10),
+    qtbase5-dev,
+    qt5-default,
+    ccache,
+    cmake,
+    libx11-dev,
+    zlib1g-dev,
+    libpng-dev,
+    libqt5svg5-dev,
+    libqt5maemo5-dev,
+    libqt5x11extras5-dev,
+    qtdeclarative5-dev,
+    qtdeclarative5-dev-tools,
+    libkotki,
+Homepage: https://github.com/maemo-leste-extras/maemo-translate
+XSBC-Bugtracker: https://github.com/maemo-leste-extras/maemo-translate/issues
+Vcs-Git: https://github.com/maemo-leste-extras/maemo-translate/
+Vcs-Browser: https://github.com/maemo-leste-extras/maemo-translate/
+
+
+Package: maemo-translate
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends},
+    libkotki,
+Description: Maemo translation UI for translating text locally

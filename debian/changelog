@@ -1,0 +1,5 @@
+maemo-translate (0.1) unstable; urgency=medium
+
+  * Initial debian packaging
+
+ -- Sander <code@kroket.io>  Tue, 17 Jan 2023 20:33:36 +0100
