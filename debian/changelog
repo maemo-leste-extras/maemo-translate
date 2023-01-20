@@ -1,3 +1,9 @@
+maemo-translate (0.1.2) unstable; urgency=medium
+
+  * Continue on empty message, not break
+
+ -- Sander <code@kroket.io>  Tue, 20 Jan 2023 11:33:36 +0100
+
 maemo-translate (0.1) unstable; urgency=medium
 
   * Initial debian packaging

@@ -11,7 +11,7 @@ void TranslationThread::run() {
     TranslationTask task = tasks->get();
     const auto message = task.source;
     if (message.isEmpty())
-        break;
+        continue;
 
     emit translationStarted();
     milliseconds then = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
