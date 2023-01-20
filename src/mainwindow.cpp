@@ -9,6 +9,7 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  m_currentModel = m_ctx->preloadModel;
 
   QPixmap p(":assets/logo.jpg");
   qDebug() << "width: " << this->size().width();
@@ -76,11 +77,12 @@ void MainWindow::onTextChanged() {
 void MainWindow::onTranslationStarted() {
   QPalette pa(palette());
   pa.setColor(QPalette::Base, Qt::black);
-  pa.setColor(QPalette::Text, Qt::darkGray);
+  pa.setColor(QPalette::Text, Qt::red);
   ui->toTxt->setPalette(pa);
 }
 
 void MainWindow::onTranslationEnded(TranslationTask task) {
+  if(task.hidden) return;
   QPalette pa(palette());
   pa.setColor(QPalette::Base, Qt::black);
   pa.setColor(QPalette::Text, Qt::white);

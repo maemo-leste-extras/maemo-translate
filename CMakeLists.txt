@@ -26,6 +26,10 @@ add_executable(maemo-translate
         src/lib/debounce.h
         src/lib/blocking_queue.h
         src/lib/blocking_queue.cpp
+        src/lib/config.cpp
+        src/lib/config.h
+        src/lib/utils.cpp
+        src/lib/utils.h
         src/mainwindow.cpp
         src/mainwindow.ui
         src/resources.qrc)

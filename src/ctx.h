@@ -2,6 +2,8 @@
 
 #include <QObject>
 #include <QMainWindow>
+#include <QCoreApplication>
+#include <QJsonDocument>
 #include <QTimer>
 #include <QDebug>
 #include <QQueue>
@@ -11,6 +13,7 @@
 #include "lib/debounce.h"
 #include "lib/blocking_queue.h"
 
+#include "lib/config.h"
 #include "kotki/kotki.h"
 
 struct TranslationTask {
@@ -19,6 +22,8 @@ struct TranslationTask {
   QString model = "ende";
   unsigned int timing = 0; // in milliseconds
   Kotki *kotki = nullptr;
+  bool hidden = false;  // update UI?
+  bool popularity = true;  // update popularity contest?
 };
 Q_DECLARE_METATYPE(TranslationTask);
 
@@ -48,6 +53,10 @@ public:
   ~AppContext() override;
 
   bool isDebug;
+  QString preloadModel;
+  QString configDirectory;
+  QString configRoot;
+  QString homeDir;
   Kotki *kotki;
   TranslationThread *translationThread;
 
@@ -58,6 +67,10 @@ signals:
   void translationEnded(TranslationTask task);
   void modelsAvailable(QStringList models);
 
+private slots:
+    void onTranslationEnded(TranslationTask task);
+
 private:
   QSharedPointer<MessageQueue> m_tasks;
+  static void createConfigDirectory(const QString &dir);
 };

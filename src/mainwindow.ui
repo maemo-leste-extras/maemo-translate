@@ -246,8 +246,8 @@
                <brush brushstyle="SolidPattern">
                 <color alpha="255">
                  <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
+                 <green>0</green>
+                 <blue>0</blue>
                 </color>
                </brush>
               </colorrole>
@@ -275,8 +275,8 @@
                <brush brushstyle="SolidPattern">
                 <color alpha="255">
                  <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
+                 <green>0</green>
+                 <blue>0</blue>
                 </color>
                </brush>
               </colorrole>
@@ -345,7 +345,7 @@
             <bool>true</bool>
            </property>
            <property name="plainText">
-            <string>Hello Welt</string>
+            <string>Loading...</string>
            </property>
           </widget>
          </item>
