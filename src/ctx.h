@@ -19,6 +19,7 @@ struct TranslationTask {
   QString model = "ende";
   unsigned int timing = 0; // in milliseconds
   Kotki *kotki = nullptr;
+  bool hidden = false;
 };
 Q_DECLARE_METATYPE(TranslationTask);
 
@@ -48,6 +49,9 @@ public:
   ~AppContext() override;
 
   bool isDebug;
+  QString configDirectory;
+  QString configRoot;
+  QString homeDir;
   Kotki *kotki;
   TranslationThread *translationThread;
 
@@ -60,4 +64,5 @@ signals:
 
 private:
   QSharedPointer<MessageQueue> m_tasks;
+  static void createConfigDirectory(const QString &dir);
 };

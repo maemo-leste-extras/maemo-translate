@@ -27,7 +27,13 @@ void TranslationThread::run() {
   }
 }
 
+
 AppContext::AppContext() {
+  configRoot = QDir::homePath();
+  homeDir = QDir::homePath();
+  configDirectory = QString("%1/.config/%2/").arg(configRoot, QCoreApplication::applicationName());
+  createConfigDirectory(configDirectory);
+
   kotki = new Kotki();
   kotki->scan();
 
@@ -42,6 +48,17 @@ AppContext::AppContext() {
 void AppContext::queueTask(TranslationTask task) {
   m_tasks->clear();
   m_tasks->put(task);
+}
+
+void AppContext::createConfigDirectory(const QString &dir) {
+  QStringList createDirs({dir});
+  for(const auto &d: createDirs) {
+    if(!Utils::dirExists(d)) {
+      qDebug() << QString("Creating directory: %1").arg(d);
+      if (!QDir().mkpath(d))
+        throw std::runtime_error("Could not create directory " + d.toStdString());
+    }
+  }
 }
 
 AppContext::~AppContext() {}
