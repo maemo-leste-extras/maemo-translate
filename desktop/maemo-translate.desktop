@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Maemo Translate
+GenericName=Maemo Translate
+Exec=maemo-translate
+Icon=general_presence_travel
+Terminal=false
+Type=Application
+Categories=Utility;

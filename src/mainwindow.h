@@ -3,6 +3,10 @@
 #include <iostream>
 
 #include <QMainWindow>
+#include <QCompleter>
+#include <QPushButton>
+#include <QClipboard>
+#include <QStringListModel>
 #include <QTimer>
 #include <QDebug>
 #include <QQueue>
@@ -10,6 +14,7 @@
 #include <QMutex>
 
 #include "ctx.h"
+#include "lib/utils.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +29,7 @@ public:
   explicit MainWindow(AppContext *ctx, QWidget *parent = nullptr);
   void setupUIModels();
   void queueTask();
+  void setupCompleter();
   ~MainWindow();
 
 signals:
@@ -34,6 +40,9 @@ private slots:
   void onTranslationStarted();
   void onTranslationEnded(TranslationTask task);
   void onLangChanged(QString description);
+  void onPastePressed();
+  void onClearPressed();
+  void onCopyPressed();
 
 private:
   Ui::MainWindow *ui;
@@ -41,4 +50,8 @@ private:
   std::function<void()> m_debouncedTranslation;
   std::vector<std::map<std::string, std::string>> m_translationModels;
   QString m_currentModel = "ende";
+
+  QStringList m_dict;
+  QStringListModel *m_completerModel = nullptr;
+  QCompleter *m_completer = nullptr;
 };

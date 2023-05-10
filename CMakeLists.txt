@@ -6,6 +6,7 @@ project(maemo-translate
         HOMEPAGE_URL https://github.com/maemo-leste-extras/maemo-translate
         LANGUAGES CXX C)
 set(CMAKE_CXX_STANDARD 17)
+set(MAEMO_TRANSLATE_DESKTOP_DIR /usr/share/applications/hildon)
 
 include(GNUInstallDirs)  # initializes ${CMAKE_INSTALL_*DIR} to sane defaults
 include(CMakePackageConfigHelpers)
@@ -30,6 +31,8 @@ add_executable(maemo-translate
         src/lib/config.h
         src/lib/utils.cpp
         src/lib/utils.h
+        src/lib/textedit.cpp
+        src/lib/textedit.h
         src/mainwindow.cpp
         src/mainwindow.ui
         src/resources.qrc)
@@ -44,6 +47,10 @@ if(${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "arm*")
   target_compile_definitions(maemo-translate PRIVATE ARM=1)
 endif()
 
+if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
+  target_compile_definitions(maemo-translate PRIVATE DEBUG=1)
+endif()
+
 set_target_properties(maemo-translate PROPERTIES
         CXX_STANDARD 17
         CXX_EXTENSIONS OFF
@@ -55,3 +62,5 @@ set(EXECUTABLE_FLAG)
 install(TARGETS maemo-translate
         DESTINATION bin
         )
+
+add_subdirectory(desktop)

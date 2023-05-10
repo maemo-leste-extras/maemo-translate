@@ -9,6 +9,7 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  ui->toTxtLatin->hide();
   m_currentModel = m_ctx->preloadModel;
 
   QPixmap p(":assets/logo.jpg");
@@ -38,13 +39,78 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
 
   this->setupUIModels();
   this->show();
+  this->setupCompleter();
 
   QTimer::singleShot(100, [this](){
-    connect(ui->fromTxt, &QPlainTextEdit::textChanged, this, &MainWindow::onTextChanged);
+    connect(ui->fromTxt, &QTextEdit::textChanged, this, &MainWindow::onTextChanged);
     connect(ui->langBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onLangChanged(const QString&)));
     connect(m_ctx->translationThread, &TranslationThread::translationStarted, this, &MainWindow::onTranslationStarted);
     connect(m_ctx->translationThread, &TranslationThread::translationEnded, this, &MainWindow::onTranslationEnded);
+    connect(ui->btnCopy, &QPushButton::pressed, this, &MainWindow::onCopyPressed);
+    connect(ui->btnClear, &QPushButton::pressed, this, &MainWindow::onClearPressed);
+    connect(ui->btnPaste, &QPushButton::pressed, this, &MainWindow::onPastePressed);
+
+      if(!m_ctx->translationTaskResult.err) {
+        // manually pass the initial translation task
+        // when the result is completed before
+        // the mainwindow even spawned
+        this->onTranslationEnded(m_ctx->translationTaskResult);
+      } else {
+        ui->toTxt->setPlainText("Error");
+      }
   });
+}
+
+void MainWindow::onCopyPressed() {
+  QClipboard *clipboard = QGuiApplication::clipboard();
+  auto toTxt = ui->toTxt->toPlainText();
+  clipboard->setText(toTxt);
+}
+
+void MainWindow::onClearPressed() {
+  ui->fromTxt->clear();
+  ui->toTxt->clear();
+  ui->toTxtLatin->clear();
+}
+
+void MainWindow::onPastePressed() {
+  QClipboard *clipboard = QGuiApplication::clipboard();
+  QString clipboardText = clipboard->text();
+  ui->fromTxt->setText(clipboardText);
+}
+
+void MainWindow::setupCompleter() {
+  auto exists = QFile::exists("/usr/share/dict/american-english");
+  if(!exists) {
+    qWarning() << "could not find /usr/share/dict/american-english so the completer is disabled, you need: 'apt install -y wamerican'";
+    return;
+  }
+
+  QFile inputFile("/usr/share/dict/american-english");
+  inputFile.open(QIODevice::ReadOnly);
+  if (!inputFile.isOpen())
+    return;
+
+  QTextStream stream(&inputFile);
+  for (QString line = stream.readLine();
+       !line.isNull();
+       line = stream.readLine()) {
+    if(line.length() <= 2)
+      continue;
+    if(line.contains("'"))
+      continue;
+
+    m_dict << line.trimmed();
+  }
+
+  m_completerModel = new QStringListModel(m_dict, m_completer);
+  m_completer = new QCompleter(this);
+  m_completer->setModel(m_completerModel);
+  m_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+  m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+  m_completer->setWrapAround(false);
+
+  ui->fromTxt->setCompleter(m_completer);
 }
 
 void MainWindow::setupUIModels() {
@@ -71,7 +137,16 @@ void MainWindow::setupUIModels() {
 }
 
 void MainWindow::onTextChanged() {
-  m_debouncedTranslation();
+  if(ui->fromTxt->toPlainText().length() > 0) {
+    m_debouncedTranslation();
+    return;
+  }
+
+  if(ui->toTxt->toPlainText().length() > 0)
+    ui->toTxt->setPlainText("");
+
+  if(ui->toTxtLatin->toPlainText().length() > 0)
+    ui->toTxtLatin->setPlainText("");
 }
 
 void MainWindow::onTranslationStarted() {
@@ -88,11 +163,23 @@ void MainWindow::onTranslationEnded(TranslationTask task) {
   pa.setColor(QPalette::Text, Qt::white);
   ui->toTxt->setPalette(pa);
   ui->toTxt->setPlainText(task.result);
+
+  // transliteration
+  auto lang = task.model.remove(0, 2);
+  if(m_ctx->transliteration_langs.contains(lang)) {
+    ui->toTxtLatin->show();
+    ui->latinResultLine->show();
+    auto transliteration = Utils::transliteration(lang, task.result);
+    ui->toTxtLatin->setPlainText(transliteration);
+  } else {
+    ui->toTxtLatin->hide();
+    ui->latinResultLine->hide();
+  }
 }
 
 void MainWindow::onLangChanged(QString description) {
   for(const auto &model: m_translationModels) {
-    string desc = model.at("description");
+    std::string desc = model.at("description");
     if(desc == description.toStdString()) {
       m_currentModel = QString::fromStdString(model.at("name"));
     }

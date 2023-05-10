@@ -6,30 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1346</width>
-    <height>922</height>
+    <width>1162</width>
+    <height>796</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Maemo translate</string>
+   <string>Maemo Translate</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_3">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
-    <property name="spacing">
-     <number>0</number>
-    </property>
     <item row="0" column="0">
      <widget class="QFrame" name="imgFrame">
       <property name="frameShape">
@@ -73,13 +58,22 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <item row="1" column="0">
+        <widget class="QComboBox" name="langBox">
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="spacing">
           <number>24</number>
          </property>
          <item>
-          <widget class="QPlainTextEdit" name="fromTxt">
+          <widget class="TextEdit" name="fromTxt">
            <property name="palette">
             <palette>
              <active>
@@ -182,8 +176,12 @@
            <property name="frameShadow">
             <enum>QFrame::Plain</enum>
            </property>
-           <property name="plainText">
-            <string>Hello world</string>
+           <property name="html">
+            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:24pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Hello world&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
           </widget>
          </item>
@@ -238,127 +236,306 @@
           </widget>
          </item>
          <item>
-          <widget class="QPlainTextEdit" name="toTxt">
-           <property name="palette">
-            <palette>
-             <active>
-              <colorrole role="Text">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>0</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="PlaceholderText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="128">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </active>
-             <inactive>
-              <colorrole role="Text">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>255</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>0</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="PlaceholderText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="128">
-                 <red>255</red>
-                 <green>255</green>
-                 <blue>255</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </inactive>
-             <disabled>
-              <colorrole role="Text">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>190</red>
-                 <green>190</green>
-                 <blue>190</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="Base">
-               <brush brushstyle="SolidPattern">
-                <color alpha="255">
-                 <red>239</red>
-                 <green>239</green>
-                 <blue>239</blue>
-                </color>
-               </brush>
-              </colorrole>
-              <colorrole role="PlaceholderText">
-               <brush brushstyle="SolidPattern">
-                <color alpha="128">
-                 <red>0</red>
-                 <green>0</green>
-                 <blue>0</blue>
-                </color>
-               </brush>
-              </colorrole>
-             </disabled>
-            </palette>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QPlainTextEdit" name="toTxt">
+             <property name="palette">
+              <palette>
+               <active>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>255</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </active>
+               <inactive>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>255</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </inactive>
+               <disabled>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>190</red>
+                   <green>190</green>
+                   <blue>190</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>239</red>
+                   <green>239</green>
+                   <blue>239</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </disabled>
+              </palette>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>24</pointsize>
+              </font>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="plainText">
+              <string>Loading...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="latinResultLine">
+             <property name="palette">
+              <palette>
+               <active>
+                <colorrole role="WindowText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>192</red>
+                   <green>191</green>
+                   <blue>188</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </active>
+               <inactive>
+                <colorrole role="WindowText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>192</red>
+                   <green>191</green>
+                   <blue>188</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </inactive>
+               <disabled>
+                <colorrole role="WindowText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>190</red>
+                   <green>190</green>
+                   <blue>190</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </disabled>
+              </palette>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>4</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPlainTextEdit" name="toTxtLatin">
+             <property name="palette">
+              <palette>
+               <active>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </active>
+               <inactive>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>255</red>
+                   <green>255</green>
+                   <blue>255</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </inactive>
+               <disabled>
+                <colorrole role="Text">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>190</red>
+                   <green>190</green>
+                   <blue>190</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="Base">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="255">
+                   <red>239</red>
+                   <green>239</green>
+                   <blue>239</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="SolidPattern">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+               </disabled>
+              </palette>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>24</pointsize>
+              </font>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="btnPaste">
+           <property name="text">
+            <string>Paste</string>
            </property>
-           <property name="font">
-            <font>
-             <pointsize>24</pointsize>
-            </font>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnClear">
+           <property name="text">
+            <string>Clear</string>
            </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-           <property name="plainText">
-            <string>Loading...</string>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnCopy">
+           <property name="text">
+            <string>Copy</string>
            </property>
           </widget>
          </item>
         </layout>
-       </item>
-       <item row="1" column="0">
-        <widget class="QComboBox" name="langBox">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-          </font>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
@@ -367,6 +544,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>TextEdit</class>
+   <extends>QTextEdit</extends>
+   <header>lib/textedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="resources.qrc"/>
  </resources>

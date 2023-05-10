@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QCoreApplication>
 #include <QJsonDocument>
+#include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
 #include <QQueue>
@@ -24,6 +25,7 @@ struct TranslationTask {
   Kotki *kotki = nullptr;
   bool hidden = false;  // update UI?
   bool popularity = true;  // update popularity contest?
+  bool err = false;
 };
 Q_DECLARE_METATYPE(TranslationTask);
 
@@ -58,7 +60,10 @@ public:
   QString configRoot;
   QString homeDir;
   Kotki *kotki;
+  QStringList kotkiModels;
   TranslationThread *translationThread;
+  QStringList transliteration_langs;
+  TranslationTask translationTaskResult;
 
   void queueTask(TranslationTask task);
 

@@ -5,6 +5,7 @@
 #include <QStandardPaths>
 
 #include "ctx.h"
+#include "lib/utils.h"
 
 using namespace std::chrono;
 
@@ -25,6 +26,8 @@ void TranslationThread::run() {
     milliseconds now = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
     auto took = duration_cast<milliseconds>(now - then);
     task.timing = took.count();
+
+    task.err = task.result.isEmpty();
     emit translationEnded(task);
   }
 }
@@ -38,6 +41,9 @@ AppContext::AppContext() {
 
   kotki = new Kotki();
   kotki->scan();
+
+  for (const auto &pair: kotki->listModels())
+    kotkiModels << QString::fromStdString(pair.first);
 
   // setup translation thread
   m_tasks = QSharedPointer<MessageQueue>::create();
@@ -70,7 +76,26 @@ AppContext::AppContext() {
     task.model = best->first;
   }
 
-  qDebug() << "preload: " << task.model;
+  // check if model is actually available
+  if(!kotkiModels.contains(task.model)) {
+    qDebug() << QString("Language model %1 not available, switching to default 'ende'").arg(task.model);
+    task.model = "ende";
+    if(!kotkiModels.contains(task.model)) {
+      // still not available? exit
+      auto msg = QString("Language model %1 not available - did you install any? Exiting.").arg(task.model);
+      QMessageBox msgBox;
+      msgBox.setText(msg);
+      msgBox.exec();
+      throw std::runtime_error(msg.toStdString());
+    }
+  }
+
+  // load transliteration database
+  auto data = Utils::fileOpenQRC(":/assets/cyrillic-transliteration.json");
+  auto doc = QJsonDocument::fromJson(data);
+  auto obj = doc.object();
+  this->transliteration_langs = obj.keys();
+
   this->queueTask(task);
   preloadModel = task.model;
 }
@@ -81,6 +106,7 @@ void AppContext::queueTask(TranslationTask task) {
 }
 
 void AppContext::onTranslationEnded(TranslationTask task) {
+  translationTaskResult = task;
   if(task.hidden || !task.popularity) return;
 
   // increment popularity stats

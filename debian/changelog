@@ -1,3 +1,16 @@
+maemo-translate (0.1.6) unstable; urgency=medium
+
+  * Copy/Paste to/from clipboard buttons, and a clear button
+  * Word completion on the 'from' translation textbox. Currently does *not* work on Maemo (why?)
+  * Cyrillic transliteration to Latin
+  * During startup, fallback to a default model when the requested model is not present
+  * Clear results when input is empty
+  * Load environment from file during Debug
+  * Install a desktop icon
+  * Bump version
+
+ -- Sander <code@kroket.io>  Tue, 20 Jan 2023 11:33:36 +0100
+
 maemo-translate (0.1.4) unstable; urgency=medium
 
   * Fix debian package
