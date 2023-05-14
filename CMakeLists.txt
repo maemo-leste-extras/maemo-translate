@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(maemo-translate
-        VERSION 0.1.4
+        VERSION 0.1.7
         DESCRIPTION "Library for language translation without using the cloud."
         HOMEPAGE_URL https://github.com/maemo-leste-extras/maemo-translate
         LANGUAGES CXX C)
@@ -33,6 +33,9 @@ add_executable(maemo-translate
         src/lib/utils.h
         src/lib/textedit.cpp
         src/lib/textedit.h
+        src/about.cpp
+        src/about.h
+        src/about.ui
         src/mainwindow.cpp
         src/mainwindow.ui
         src/resources.qrc)

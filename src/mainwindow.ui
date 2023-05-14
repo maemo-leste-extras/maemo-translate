@@ -62,7 +62,9 @@
         <widget class="QComboBox" name="langBox">
          <property name="font">
           <font>
-           <pointsize>18</pointsize>
+           <pointsize>24</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
           </font>
          </property>
         </widget>
@@ -193,9 +195,9 @@ p, li { white-space: pre-wrap; }
               <colorrole role="WindowText">
                <brush brushstyle="SolidPattern">
                 <color alpha="255">
-                 <red>192</red>
-                 <green>191</green>
-                 <blue>188</blue>
+                 <red>94</red>
+                 <green>92</green>
+                 <blue>100</blue>
                 </color>
                </brush>
               </colorrole>
@@ -204,9 +206,9 @@ p, li { white-space: pre-wrap; }
               <colorrole role="WindowText">
                <brush brushstyle="SolidPattern">
                 <color alpha="255">
-                 <red>192</red>
-                 <green>191</green>
-                 <blue>188</blue>
+                 <red>94</red>
+                 <green>92</green>
+                 <blue>100</blue>
                 </color>
                </brush>
               </colorrole>
@@ -228,7 +230,7 @@ p, li { white-space: pre-wrap; }
             <enum>QFrame::Plain</enum>
            </property>
            <property name="lineWidth">
-            <number>4</number>
+            <number>2</number>
            </property>
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -357,9 +359,9 @@ p, li { white-space: pre-wrap; }
                 <colorrole role="WindowText">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
-                   <red>192</red>
-                   <green>191</green>
-                   <blue>188</blue>
+                   <red>94</red>
+                   <green>92</green>
+                   <blue>100</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -368,9 +370,9 @@ p, li { white-space: pre-wrap; }
                 <colorrole role="WindowText">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
-                   <red>192</red>
-                   <green>191</green>
-                   <blue>188</blue>
+                   <red>94</red>
+                   <green>92</green>
+                   <blue>100</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -392,7 +394,7 @@ p, li { white-space: pre-wrap; }
               <enum>QFrame::Plain</enum>
              </property>
              <property name="lineWidth">
-              <number>4</number>
+              <number>2</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -407,9 +409,9 @@ p, li { white-space: pre-wrap; }
                 <colorrole role="Text">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
+                   <red>192</red>
+                   <green>191</green>
+                   <blue>188</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -436,9 +438,9 @@ p, li { white-space: pre-wrap; }
                 <colorrole role="Text">
                  <brush brushstyle="SolidPattern">
                   <color alpha="255">
-                   <red>255</red>
-                   <green>255</green>
-                   <blue>255</blue>
+                   <red>192</red>
+                   <green>191</green>
+                   <blue>188</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -494,7 +496,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
-               <pointsize>24</pointsize>
+               <pointsize>18</pointsize>
               </font>
              </property>
              <property name="frameShape">
@@ -542,6 +544,34 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1162</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuw00t">
+    <property name="title">
+     <string>w00t</string>
+    </property>
+    <addaction name="actionAbout"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <addaction name="menuw00t"/>
+  </widget>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

@@ -76,18 +76,10 @@ AppContext::AppContext() {
     task.model = best->first;
   }
 
-  // check if model is actually available
+  // check if the preferred startup model is actually available
   if(!kotkiModels.contains(task.model)) {
-    qDebug() << QString("Language model %1 not available, switching to default 'ende'").arg(task.model);
-    task.model = "ende";
-    if(!kotkiModels.contains(task.model)) {
-      // still not available? exit
-      auto msg = QString("Language model %1 not available - did you install any? Exiting.").arg(task.model);
-      QMessageBox msgBox;
-      msgBox.setText(msg);
-      msgBox.exec();
-      throw std::runtime_error(msg.toStdString());
-    }
+    qDebug() << QString("Language model %1 not available, switching to first available").arg(task.model);
+    task.model = kotkiModels.at(0);
   }
 
   // load transliteration database

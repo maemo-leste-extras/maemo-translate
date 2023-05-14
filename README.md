@@ -1,12 +1,21 @@
 Maemo-translate
 ===================
 
-Translate text without requiring an internet connection. Built on top of [kotki](https://github.com/kroketio/kotki/).
+Maemo Translate provides automated translation of text input. Unlike cloud-based 
+alternatives, translation is done locally so that it does not leave the device. Built on 
+top of [kotki](https://github.com/kroketio/kotki/).
 
 ## Models
 
 The language models are available via debian packages on maemo leste, `apt search maemo-translate-data-*` to list 
 them. You'll need to restart the GUI after installing new models.
+
+## Credits
+
+Maemo Translate borrows language models from the Mozilla extension "Firefox Translations" and uses 
+technology that was developed with The Bergamot Project Consortium, coordinated by the 
+University of Edinburgh with partners Charles University in Prague, the University of Sheffield, 
+University of Tartu, and Mozilla.
 
 #### hacking
 

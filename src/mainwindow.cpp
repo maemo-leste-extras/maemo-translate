@@ -9,6 +9,10 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
     ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  ui->menuBar->hide();
+
+  setProperty("X-Maemo-StackedWindow", 1);
+
   ui->toTxtLatin->hide();
   m_currentModel = m_ctx->preloadModel;
 
@@ -40,6 +44,9 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
   this->setupUIModels();
   this->show();
   this->setupCompleter();
+
+  connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::onOpenAboutWindow);
+  connect(ui->actionExit, &QAction::triggered, this, &MainWindow::onQuitApplication);
 
   QTimer::singleShot(100, [this](){
     connect(ui->fromTxt, &QTextEdit::textChanged, this, &MainWindow::onTextChanged);
@@ -196,6 +203,14 @@ void MainWindow::queueTask() {
   m_ctx->queueTask(task);
 }
 
+void MainWindow::onOpenAboutWindow() {
+  m_about = new About(m_ctx, this);
+  m_about->show();
+}
+
+void MainWindow::onQuitApplication() {
+  this->close();
+}
 
 MainWindow::~MainWindow() {
   delete ui;

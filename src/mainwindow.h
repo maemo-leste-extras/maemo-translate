@@ -14,10 +14,11 @@
 #include <QMutex>
 
 #include "ctx.h"
+#include "about.h"
 #include "lib/utils.h"
 
 namespace Ui {
-class MainWindow;
+  class MainWindow;
 }
 
 class AppContext;
@@ -35,6 +36,10 @@ public:
 signals:
   void startTranslation(TranslationTask task);
 
+public slots:
+    void onOpenAboutWindow();
+    void onQuitApplication();
+
 private slots:
   void onTextChanged();
   void onTranslationStarted();
@@ -51,6 +56,7 @@ private:
   std::vector<std::map<std::string, std::string>> m_translationModels;
   QString m_currentModel = "ende";
 
+  About *m_about = nullptr;
   QStringList m_dict;
   QStringListModel *m_completerModel = nullptr;
   QCompleter *m_completer = nullptr;
