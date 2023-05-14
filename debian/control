@@ -32,3 +32,4 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
     libkotki,
     wamerican
 Description: Maemo translation UI for translating text locally
+XB-Maemo-Display-Name: Maemo (Offline) Translations
