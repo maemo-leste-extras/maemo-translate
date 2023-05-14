@@ -30,6 +30,7 @@ Package: maemo-translate
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
     libkotki,
-    wamerican
+    wamerican,
+    maemo-translate-data-de
 Description: Maemo translation UI for translating text locally
 XB-Maemo-Display-Name: Maemo (Offline) Translations
