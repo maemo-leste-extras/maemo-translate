@@ -19,6 +19,15 @@ find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(kotki REQUIRED)
 find_package(CLI11 REQUIRED)
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(CPUINFO REQUIRED IMPORTED_TARGET libcpuinfo)
+
+# custom imported target for cpuinfo because we are not using CMake
+# https://git.maemo.org/leste/bugtracker/issues/819
+add_library(cpuinfo::cpuinfo INTERFACE IMPORTED)
+target_link_libraries(cpuinfo::cpuinfo INTERFACE PkgConfig::CPUINFO)
+target_include_directories(cpuinfo::cpuinfo INTERFACE ${CPUINFO_INCLUDE_DIRS})
+
 # Tell CMake to create the maemo-translate executable
 add_executable(maemo-translate
         src/main.cpp
