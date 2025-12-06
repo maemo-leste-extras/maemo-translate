@@ -2,8 +2,6 @@
 
 #include <QObject>
 #include <QSettings>
-#include <QRegExp>
-#include <QTextCodec>
 #include <QStandardItemModel>
 #include <QApplication>
 #include <QTextCharFormat>
@@ -19,6 +17,5 @@ public:
     static QByteArray fileOpenQRC(const QString &path);
     static bool isCyrillic(const QString &inp);
     static QString transliteration(const QString &lang, const QString &inp);
-    static QString barrayToString(const QByteArray &data);
     static bool dirExists(const QString &path);
 };

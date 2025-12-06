@@ -12,10 +12,6 @@ bool Utils::readJsonFile(QIODevice &device, QSettings::SettingsMap &map) {
   return true;
 }
 
-QString Utils::barrayToString(const QByteArray &data) {
-  return QString(QTextCodec::codecForMib(106)->toUnicode(data));
-}
-
 bool Utils::writeJsonFile(QIODevice &device, const QSettings::SettingsMap &map) {
   device.write(QJsonDocument(QJsonObject::fromVariantMap(map)).toJson(QJsonDocument::Indented));
   return true;

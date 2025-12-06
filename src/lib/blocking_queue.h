@@ -1,6 +1,8 @@
 #ifndef BLOCKING_QUEUE_H
 #define BLOCKING_QUEUE_H
 
+#include <climits>
+
 #include <QtCore/qqueue.h>
 #include <QtCore/qreadwritelock.h>
 

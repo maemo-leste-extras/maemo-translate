@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 project(maemo-translate
-        VERSION 0.1.8
+        VERSION 0.3.0
         DESCRIPTION "Library for language translation without using the cloud."
         HOMEPAGE_URL https://github.com/maemo-leste-extras/maemo-translate
         LANGUAGES CXX C)
@@ -15,10 +15,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 find_package(kotki REQUIRED)
 find_package(CLI11 REQUIRED)
-
+find_package(qt6maemo REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(CPUINFO REQUIRED IMPORTED_TARGET libcpuinfo)
 
@@ -45,13 +45,20 @@ add_executable(maemo-translate
         src/about.cpp
         src/about.h
         src/about.ui
+        src/translateinwidget.cpp
+        src/translateinwidget.h
+        src/translateinwidget.ui
+        src/translateoutwidget.cpp
+        src/translateoutwidget.h
+        src/translateoutwidget.ui
         src/mainwindow.cpp
         src/mainwindow.ui
         src/resources.qrc)
 
 target_link_libraries(maemo-translate
-        Qt5::Widgets
+        Qt6::Widgets
         CLI11::CLI11
+        qt6maemo::qt6maemo
         kotki::kotki-lib-SHARED)
 target_include_directories(maemo-translate PRIVATE src)
 

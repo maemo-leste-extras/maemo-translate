@@ -11,9 +11,10 @@
 #include <QThread>
 #include <QMutex>
 
+#include "translateinwidget.h"
+#include "translateoutwidget.h"
 #include "lib/debounce.h"
 #include "lib/blocking_queue.h"
-
 #include "lib/config.h"
 #include "kotki/kotki.h"
 
@@ -31,12 +32,13 @@ Q_DECLARE_METATYPE(TranslationTask);
 
 typedef BlockingQueue<TranslationTask> MessageQueue;
 
-class TranslationThread: public QThread
-{
+
+
+class TranslationThread final : public QThread {
 Q_OBJECT
 
 public:
-  TranslationThread(QSharedPointer<MessageQueue> tasks) : tasks(tasks) {}
+  explicit TranslationThread(const QSharedPointer<MessageQueue> &tasks) : tasks(tasks) {}
   virtual void run() override;
 
 signals:
@@ -46,13 +48,24 @@ public:
   QSharedPointer<MessageQueue> tasks;
 };
 
+class AppContext;
+extern AppContext* CTX;
 
-class AppContext : public QObject {
+class AppContext final : public QObject {
 Q_OBJECT
 
 public:
   explicit AppContext();
   ~AppContext() override;
+  static AppContext* instance() {
+    if (CTX == nullptr) throw std::runtime_error("ctx is null");
+    return CTX;
+  }
+
+  void onQueueTask(const QString &text);
+
+  QString currentModel = "ende";
+  std::vector<std::map<std::string, std::string>> translationModels;
 
   bool isDebug;
   QString preloadModel;
@@ -64,8 +77,8 @@ public:
   TranslationThread *translationThread;
   QStringList transliteration_langs;
   TranslationTask translationTaskResult;
-
-  void queueTask(TranslationTask task);
+  TranslateInWidget *translateInWidget = nullptr;
+  TranslateOutWidget *translateOutWidget = nullptr;
 
 signals:
   void translationStarted();
@@ -77,5 +90,7 @@ private slots:
 
 private:
   QSharedPointer<MessageQueue> m_tasks;
+
+  void _queueTask(TranslationTask task);
   static void createConfigDirectory(const QString &dir);
 };

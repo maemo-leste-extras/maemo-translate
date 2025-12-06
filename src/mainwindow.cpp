@@ -1,3 +1,5 @@
+#include <QtMaemo5/QMaemo5ListPickSelector>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
@@ -12,195 +14,120 @@ MainWindow::MainWindow(AppContext *ctx, QWidget *parent) :
   ui->menuBar->hide();
 
   setProperty("X-Maemo-StackedWindow", 1);
+  setProperty("X-Maemo-Orientation", 2);
 
-  ui->toTxtLatin->hide();
-  m_currentModel = m_ctx->preloadModel;
+  const auto geo = QGuiApplication::primaryScreen()->geometry();
 
-  QPixmap p(":assets/logo.jpg");
-  qDebug() << "width: " << this->size().width();
-  qDebug() << "height: " << this->size().height();
-
-  // splash image, droid 4 reports 1346x922 which is
-  // not correct (?). we manually set it, and thus assume
-  // droid4, which is not necessarily the case ... oh well
-  auto width = this->size().width();
-  auto height = this->size().height();
-  width = 960;
-  height = 540;
-  ui->img->setPixmap(p.scaled(QSize(width, height)));
-  ui->mainFrame->setVisible(false);
-  ui->imgFrame->setVisible(true);
-
-  // splash duration
-  QTimer::singleShot(2000, [this](){
-    ui->mainFrame->setVisible(true);
-    ui->imgFrame->setVisible(false);
+  connect(m_ctx->translateInWidget, &TranslateInWidget::textChanged, [this](const QString &text) {
+    if (text.length() == 0)
+      m_ctx->translateOutWidget->clear();
   });
 
-  m_debouncedTranslation = QFunctionUtils::Debounce([=]{
-    this->queueTask();
-  }, 500);
+  ui->contentFrame->setVisible(true);
 
-  this->setupUIModels();
+  this->setupLanguageModelPicker();
   this->show();
-  this->setupCompleter();
 
   connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::onOpenAboutWindow);
   connect(ui->actionExit, &QAction::triggered, this, &MainWindow::onQuitApplication);
 
-  QTimer::singleShot(100, [this](){
-    connect(ui->fromTxt, &QTextEdit::textChanged, this, &MainWindow::onTextChanged);
-    connect(ui->langBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(onLangChanged(const QString&)));
-    connect(m_ctx->translationThread, &TranslationThread::translationStarted, this, &MainWindow::onTranslationStarted);
-    connect(m_ctx->translationThread, &TranslationThread::translationEnded, this, &MainWindow::onTranslationEnded);
-    connect(ui->btnCopy, &QPushButton::pressed, this, &MainWindow::onCopyPressed);
-    connect(ui->btnClear, &QPushButton::pressed, this, &MainWindow::onClearPressed);
-    connect(ui->btnPaste, &QPushButton::pressed, this, &MainWindow::onPastePressed);
+  connect(ui->btnCopy, &QPushButton::pressed, this, &MainWindow::onCopyPressed);
+  connect(ui->btnClear, &QPushButton::pressed, this, &MainWindow::onClearPressed);
+  connect(ui->btnPaste, &QPushButton::pressed, this, &MainWindow::onPastePressed);
 
-      if(!m_ctx->translationTaskResult.err) {
-        // manually pass the initial translation task
-        // when the result is completed before
-        // the mainwindow even spawned
-        this->onTranslationEnded(m_ctx->translationTaskResult);
-      } else {
-        ui->toTxt->setPlainText("Error");
-      }
-  });
+  if (geo.width() > geo.height()) setupContent(Orientation::Vertical);
+  else setupContent(Orientation::Vertical);
 }
 
-void MainWindow::onCopyPressed() {
+void MainWindow::resizeEvent(QResizeEvent *event) {
+  const QSize geo = event->size();
+  if (geo.width() > geo.height()) setupContent(Orientation::Horizontal);
+  else setupContent(Orientation::Vertical);
+  QMainWindow::resizeEvent(event);
+}
+
+void MainWindow::onCopyPressed() const {
   QClipboard *clipboard = QGuiApplication::clipboard();
-  auto toTxt = ui->toTxt->toPlainText();
-  clipboard->setText(toTxt);
+  const auto text = m_ctx->translateOutWidget->getText();
+  clipboard->setText(text);
 }
 
-void MainWindow::onClearPressed() {
-  ui->fromTxt->clear();
-  ui->toTxt->clear();
-  ui->toTxtLatin->clear();
+void MainWindow::onClearPressed() const {
+  m_ctx->translateInWidget->clear();
+  m_ctx->translateOutWidget->clear();
 }
 
-void MainWindow::onPastePressed() {
-  QClipboard *clipboard = QGuiApplication::clipboard();
-  QString clipboardText = clipboard->text();
-  ui->fromTxt->setText(clipboardText);
+void MainWindow::onPastePressed() const {
+  const QClipboard *clipboard = QGuiApplication::clipboard();
+  const QString clipboardText = clipboard->text();
+  if (clipboardText.length() == 0) return;
+  m_ctx->translateInWidget->setText(clipboardText);
 }
 
-void MainWindow::setupCompleter() {
-  auto exists = QFile::exists("/usr/share/dict/american-english");
-  if(!exists) {
-    qWarning() << "could not find /usr/share/dict/american-english so the completer is disabled, you need: 'apt install -y wamerican'";
-    return;
-  }
-
-  QFile inputFile("/usr/share/dict/american-english");
-  inputFile.open(QIODevice::ReadOnly);
-  if (!inputFile.isOpen())
-    return;
-
-  QTextStream stream(&inputFile);
-  for (QString line = stream.readLine();
-       !line.isNull();
-       line = stream.readLine()) {
-    if(line.length() <= 2)
-      continue;
-    if(line.contains("'"))
-      continue;
-
-    m_dict << line.trimmed();
-  }
-
-  m_completerModel = new QStringListModel(m_dict, m_completer);
-  m_completer = new QCompleter(this);
-  m_completer->setModel(m_completerModel);
-  m_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-  m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-  m_completer->setWrapAround(false);
-
-  ui->fromTxt->setCompleter(m_completer);
-}
-
-void MainWindow::setupUIModels() {
-  ui->langBox->clear();
+void MainWindow::setupLanguageModelPicker() {
   auto models = m_ctx->kotki->listModels();
   QStringList modelKeys;
 
-  // fill combobox
+  QMaemo5ListPickSelector *selector = new QMaemo5ListPickSelector;
+  QStandardItemModel *model = new QStandardItemModel(0, 1, selector);
+  QString value;
+
   for(const auto &[key, value]: models) {
     auto desc = value.at("description");
-    modelKeys.append(QString::fromStdString(desc));
-    m_translationModels.emplace_back(value);
+    model->appendRow(new QStandardItem(QString::fromStdString(desc)));
   }
-  ui->langBox->addItems(modelKeys);
+  selector->setModel(model);
 
-  // set combobox to whatever is the default language model
-  for(int i = 0; i != m_translationModels.size(); i++) {
-    auto name = m_translationModels[i].at("name");
-    if(name == m_currentModel.toStdString()) {
-      ui->langBox->setCurrentIndex(i);
+  // set combobox to default language model
+  for(int i = 0; i != m_ctx->translationModels.size(); i++) {
+    auto name = m_ctx->translationModels[i].at("name");
+    if(name == m_ctx->currentModel.toStdString()) {
+      selector->setCurrentIndex(i);
       break;
     }
   }
+
+  ui->langBox->setPickSelector(selector);
+  langBoxSelector = selector;
+  connect(langBoxSelector, SIGNAL(selected(const QString&)), this, SLOT(onLangChanged(const QString&)));
 }
 
-void MainWindow::onTextChanged() {
-  if(ui->fromTxt->toPlainText().length() > 0) {
-    m_debouncedTranslation();
-    return;
-  }
-
-  if(ui->toTxt->toPlainText().length() > 0)
-    ui->toTxt->setPlainText("");
-
-  if(ui->toTxtLatin->toPlainText().length() > 0)
-    ui->toTxtLatin->setPlainText("");
-}
-
-void MainWindow::onTranslationStarted() {
-  QPalette pa(palette());
-  pa.setColor(QPalette::Base, Qt::black);
-  pa.setColor(QPalette::Text, Qt::red);
-  ui->toTxt->setPalette(pa);
-}
-
-void MainWindow::onTranslationEnded(TranslationTask task) {
-  if(task.hidden) return;
-  QPalette pa(palette());
-  pa.setColor(QPalette::Base, Qt::black);
-  pa.setColor(QPalette::Text, Qt::white);
-  ui->toTxt->setPalette(pa);
-  ui->toTxt->setPlainText(task.result);
-
-  // transliteration
-  auto lang = task.model.remove(0, 2);
-  if(m_ctx->transliteration_langs.contains(lang)) {
-    ui->toTxtLatin->show();
-    ui->latinResultLine->show();
-    auto transliteration = Utils::transliteration(lang, task.result);
-    ui->toTxtLatin->setPlainText(transliteration);
-  } else {
-    ui->toTxtLatin->hide();
-    ui->latinResultLine->hide();
-  }
-}
-
-void MainWindow::onLangChanged(QString description) {
-  for(const auto &model: m_translationModels) {
+void MainWindow::onLangChanged(const QString &description) const {
+  for(const auto &model: m_ctx->translationModels) {
     std::string desc = model.at("description");
     if(desc == description.toStdString()) {
-      m_currentModel = QString::fromStdString(model.at("name"));
+      m_ctx->currentModel = QString::fromStdString(model.at("name"));
     }
   }
 
-  this->queueTask();
+  m_ctx->onQueueTask(m_ctx->translateInWidget->getText());
 }
 
-void MainWindow::queueTask() {
-  TranslationTask task;
-  task.source = ui->fromTxt->toPlainText();
-  task.kotki = m_ctx->kotki;
-  task.model = m_currentModel;
-  m_ctx->queueTask(task);
+void MainWindow::setupContent(const Orientation orientation) {
+  auto *w = ui->contentFrame;
+  if (w->layout())
+    delete w->layout();
+
+  w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+  if (orientation == Orientation::Horizontal) {
+    QHBoxLayout *layout = new QHBoxLayout(w);
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(12);
+
+    layout->addWidget(m_ctx->translateInWidget);
+    layout->addWidget(m_ctx->translateOutWidget);
+
+    w->setLayout(layout);
+  } else {
+    QVBoxLayout *layout = new QVBoxLayout(w);
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(12);
+
+    layout->addWidget(m_ctx->translateInWidget);
+    layout->addWidget(m_ctx->translateOutWidget);
+    w->setLayout(layout);
+  }
 }
 
 void MainWindow::onOpenAboutWindow() {

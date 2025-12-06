@@ -17,47 +17,48 @@
 #include "about.h"
 #include "lib/utils.h"
 
+#include <QtMaemo5/QMaemo5ListPickSelector>
+
 namespace Ui {
   class MainWindow;
 }
 
 class AppContext;
-class MainWindow : public QMainWindow
-{
-  Q_OBJECT
+class MainWindow final : public QMainWindow {
+Q_OBJECT
+
+enum class Orientation {
+  Horizontal,
+  Vertical
+};
 
 public:
   explicit MainWindow(AppContext *ctx, QWidget *parent = nullptr);
-  void setupUIModels();
-  void queueTask();
-  void setupCompleter();
+  void setupLanguageModelPicker();
   ~MainWindow();
+
+  void setupContent(Orientation orientation);
 
 signals:
   void startTranslation(TranslationTask task);
 
 public slots:
-    void onOpenAboutWindow();
-    void onQuitApplication();
+  void onOpenAboutWindow();
+  void onQuitApplication();
 
 private slots:
-  void onTextChanged();
-  void onTranslationStarted();
-  void onTranslationEnded(TranslationTask task);
-  void onLangChanged(QString description);
-  void onPastePressed();
-  void onClearPressed();
-  void onCopyPressed();
+  void onLangChanged(const QString& description) const;
+  void onPastePressed() const;
+  void onClearPressed() const;
+  void onCopyPressed() const;
+
+protected:
+  void resizeEvent(QResizeEvent *event) override;
 
 private:
   Ui::MainWindow *ui;
   AppContext *m_ctx = nullptr;
-  std::function<void()> m_debouncedTranslation;
-  std::vector<std::map<std::string, std::string>> m_translationModels;
-  QString m_currentModel = "ende";
 
   About *m_about = nullptr;
-  QStringList m_dict;
-  QStringListModel *m_completerModel = nullptr;
-  QCompleter *m_completer = nullptr;
+  QMaemo5ListPickSelector *langBoxSelector = nullptr;
 };

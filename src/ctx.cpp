@@ -17,13 +17,13 @@ void TranslationThread::run() {
         continue;
 
     emit translationStarted();
-    milliseconds then = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
+    auto then = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
 
     task.result = QString::fromStdString(task.kotki->translate(
       message.toStdString(),
       task.model.toStdString()));
 
-    milliseconds now = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
+    auto now = duration_cast< milliseconds >(system_clock::now().time_since_epoch());
     auto took = duration_cast<milliseconds>(now - then);
     task.timing = took.count();
 
@@ -32,8 +32,10 @@ void TranslationThread::run() {
   }
 }
 
+AppContext* CTX = nullptr;
 
 AppContext::AppContext() {
+  CTX = this;
   configRoot = QDir::homePath();
   homeDir = QDir::homePath();
   configDirectory = QString("%1/.config/%2/").arg(configRoot, QCoreApplication::applicationName());
@@ -42,8 +44,8 @@ AppContext::AppContext() {
   kotki = new Kotki();
   kotki->scan();
 
-  for (const auto &pair: kotki->listModels())
-    kotkiModels << QString::fromStdString(pair.first);
+  for (const auto &[fst, snd]: kotki->listModels())
+    kotkiModels << QString::fromStdString(fst);
 
   // setup translation thread
   m_tasks = QSharedPointer<MessageQueue>::create();
@@ -55,7 +57,7 @@ AppContext::AppContext() {
 
   // preload
   TranslationTask task;
-  task.source = "Hello world";
+  task.source = "Hello World";
   task.kotki = kotki;
   task.hidden = false;
   task.popularity = false;
@@ -68,11 +70,11 @@ AppContext::AppContext() {
   if(popularityContest.length()) {
     auto popularityContestStdMap = popularityContest.toVariantMap().toStdMap();
 
-    auto best = std::max_element(popularityContestStdMap.begin(), popularityContestStdMap.end(),
-                                 [](const std::pair<QString, QVariant> &a,
-                                    const std::pair<QString, QVariant> &b) -> bool {
-                                     return a.second < b.second;
-                                 });
+    auto best = std::max_element(popularityContestStdMap.begin(),
+                                 popularityContestStdMap.end(),
+      [](const auto &a, const auto &b) {
+        return QVariant::compare(a.second, b.second) < 0;
+      });
     task.model = best->first;
   }
 
@@ -83,18 +85,24 @@ AppContext::AppContext() {
   }
 
   // load transliteration database
-  auto data = Utils::fileOpenQRC(":/assets/cyrillic-transliteration.json");
-  auto doc = QJsonDocument::fromJson(data);
-  auto obj = doc.object();
+  const auto data = Utils::fileOpenQRC(":/assets/cyrillic-transliteration.json");
+  const auto doc = QJsonDocument::fromJson(data);
+  const auto obj = doc.object();
   this->transliteration_langs = obj.keys();
 
-  this->queueTask(task);
+  this->_queueTask(task);
   preloadModel = task.model;
-}
+  currentModel = preloadModel;
 
-void AppContext::queueTask(TranslationTask task) {
-  m_tasks->clear();
-  m_tasks->put(task);
+  auto models = kotki->listModels();
+  for(const auto &[key, value]: models) {
+    auto desc = value.at("description");
+    translationModels.emplace_back(value);
+  }
+
+  translateInWidget = new TranslateInWidget;
+  translateOutWidget = new TranslateOutWidget;
+  connect(translateInWidget, &TranslateInWidget::textChanged, this, &AppContext::onQueueTask);
 }
 
 void AppContext::onTranslationEnded(TranslationTask task) {
@@ -113,6 +121,20 @@ void AppContext::onTranslationEnded(TranslationTask task) {
   QJsonDocument doc(obj);
   config()->set(ConfigKeys::PopularityContest, doc.toJson(QJsonDocument::Compact));
   config()->sync();
+}
+
+void AppContext::onQueueTask(const QString &text) {
+  TranslationTask task;
+  task.source = text;
+  task.kotki = kotki;
+  task.model = currentModel;
+
+  _queueTask(task);
+}
+
+void AppContext::_queueTask(TranslationTask task) {
+  m_tasks->clear();
+  m_tasks->put(task);
 }
 
 void AppContext::createConfigDirectory(const QString &dir) {

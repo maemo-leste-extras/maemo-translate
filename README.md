@@ -5,6 +5,12 @@ Maemo Translate provides automated translation of text input. Unlike cloud-based
 alternatives, translation is done locally so that it does not leave the device. Built on 
 top of [kotki](https://github.com/kroketio/kotki/).
 
+### landscape
+![](screenshot2.jpg)
+
+### potrait
+![](screenshot1.jpg)
+
 ## Models
 
 The language models are available via debian packages on maemo leste, `apt search maemo-translate-data-*` to list 

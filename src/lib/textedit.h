@@ -51,6 +51,7 @@
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
+#include <QFile>
 #include <QTextEdit>
 #include <QAbstractItemModel>
 #include <QStringListModel>
