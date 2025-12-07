@@ -1,3 +1,9 @@
+maemo-translate (0.3.2) unstable; urgency=medium
+
+  * debian/changelog: fix the Maemo package name
+
+ -- Sander <code@kroket.io>  Wed, 07 Dec 2025 17:12:36 +0100
+
 maemo-translate (0.3.1) unstable; urgency=medium
 
   * debian/changelog: Qt6

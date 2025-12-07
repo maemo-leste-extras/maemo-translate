@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 10),
     zlib1g-dev,
     libpng-dev,
     libssl-dev,
-    libqt6-maemo,
+    qt6-maemo,
     qtdeclarative6-dev,
     libkotki,
 Homepage: https://git.maemo.org/leste-extras/maemo-translate
@@ -35,7 +35,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
     wamerican,
     libqt6-qpa-maemo,
     libqt6-style-maemo,
-    libqt6-maemo,
+    qt6-maemo,
     maemo-translate-data-de
 Description: Maemo translation UI for translating text locally
 XB-Maemo-Display-Name: Maemo (Offline) Translations
