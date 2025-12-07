@@ -20,7 +20,6 @@ Build-Depends: debhelper (>= 10),
     libpng-dev,
     libssl-dev,
     qt6-maemo,
-    qtdeclarative6-dev,
     libkotki,
 Homepage: https://git.maemo.org/leste-extras/maemo-translate
 XSBC-Bugtracker: https://git.maemo.org/leste-extras/maemo-translate/issues

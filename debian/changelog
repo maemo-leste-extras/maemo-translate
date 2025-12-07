@@ -1,3 +1,9 @@
+maemo-translate (0.3.4) unstable; urgency=medium
+
+  * debian/control: update dependencies
+
+ -- Sander <code@kroket.io>  Wed, 07 Dec 2025 17:13:36 +0100
+
 maemo-translate (0.3.3) unstable; urgency=medium
 
   * forgejo: add CI
