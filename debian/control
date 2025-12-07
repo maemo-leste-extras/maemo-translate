@@ -3,7 +3,6 @@ Section: user/utilities
 Priority: extra
 Maintainer: Sander <code@kroket.io>
 Build-Depends: debhelper (>= 10),
-    qtbase5-dev,
     ccache,
     cmake,
     libx11-dev,
@@ -15,16 +14,18 @@ Build-Depends: debhelper (>= 10),
     libsimde-dev,
     wamerican,
     pkg-config,
-    libqt5svg5-dev,
-    libqt5maemo5-dev,
-    libqt5x11extras5-dev,
-    qtdeclarative5-dev,
-    qtdeclarative5-dev-tools,
+    qt6-base-dev,
+    libx11-dev,
+    zlib1g-dev,
+    libpng-dev,
+    libssl-dev,
+    libqt6-maemo,
+    qtdeclarative6-dev,
     libkotki,
-Homepage: https://github.com/maemo-leste-extras/maemo-translate
-XSBC-Bugtracker: https://github.com/maemo-leste-extras/maemo-translate/issues
-Vcs-Git: https://github.com/maemo-leste-extras/maemo-translate/
-Vcs-Browser: https://github.com/maemo-leste-extras/maemo-translate/
+Homepage: https://git.maemo.org/leste-extras/maemo-translate
+XSBC-Bugtracker: https://git.maemo.org/leste-extras/maemo-translate/issues
+Vcs-Git: https://git.maemo.org/leste-extras/maemo-translate
+Vcs-Browser: https://git.maemo.org/leste-extras/maemo-translate
 
 
 Package: maemo-translate
@@ -32,6 +33,9 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
     libkotki,
     wamerican,
+    libqt6-qpa-maemo,
+    libqt6-style-maemo,
+    libqt6-maemo,
     maemo-translate-data-de
 Description: Maemo translation UI for translating text locally
 XB-Maemo-Display-Name: Maemo (Offline) Translations
